@@ -1,0 +1,31 @@
+logLevel = "DEBUG"
+defaultEntryPoints = ["https", "http"]
+
+[entryPoints]
+  [entryPoints.https]
+  address = ":443"
+    [entryPoints.https.tls]
+  [entryPoints.http]
+  address = ":80"
+    [entryPoints.http.redirect]
+    entryPoint = "https"
+
+[rancher]
+domain = "DOMAIN"
+watch = true
+refreshSeconds = 15
+exposedByDefault = false
+enableServiceHealthFilter = false
+
+[rancher.metadata]
+intervalPoll = false
+prefix = "/latest"
+
+[acme]
+email = "EMAIL"
+caServer = "https://acme-v02.api.letsencrypt.org/directory"
+storage = "/acme/acme.json"
+entryPoint = "https"
+onHostRule = true
+[acme.httpChallenge]
+entryPoint = "http"

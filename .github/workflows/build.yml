@@ -1,0 +1,22 @@
+name: Build-Push
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Build the Docker container image
+        run: docker build -t docker.pkg.github.com/bertrandmartel/traefik-rancher/traefik-rancher:latest .
+
+      - name: Login to GitHub Package Registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.pkg.github.com -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push the image to GPR
+        run: docker push docker.pkg.github.com/bertrandmartel/traefik-rancher/traefik-rancher:latest
+        env:
+          GITHUB_PACKAGE_REGISTRY_TOKEN: ${{ secrets.GITHUB_PACKAGE_REGISTRY_TOKEN }}
+
